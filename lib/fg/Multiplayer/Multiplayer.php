@@ -18,6 +18,22 @@ class Multiplayer {
 	/**
 	 *	Names of the available options.
 	 *
+	 *	### options
+	 *
+	 *	- 'autoPlay' boolean Whether or not to start the video when it is loaded.
+	 *	- 'showInfos' boolean
+	 *	- 'showBranding' boolean
+	 *	- 'showRelated' boolean Whether or not to show related videos at the end.
+	 *	- 'backgroundColor' string Color code of the player's background.
+	 *	- 'foregroundColor' string Color code of the player's foreground.
+	 *	- 'highlightColor' string Color code of the player's .
+	 *	- 'wrapper' string A HTML code to wrap the video url.
+	 *	- 'providers' array A set of configurations indexed by provider name.
+	 *		- 'id' string A regex to find a video id.
+	 *		- 'player' string Base url of the player.
+	 *		- 'map' array A map of options to translate from generic ones to
+	 *			provider-specific ones.
+	 *
 	 *	@var array
 	 */
 
@@ -29,63 +45,47 @@ class Multiplayer {
 		'backgroundColor' => null,
 		'foregroundColor' => null,
 		'highlightColor' => null,
-		'wrapper' => '<iframe src="%s" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>'
-	);
-
-
-
-	/**
-	 *	A set of configurations indexed by provider name.
-	 *
-	 *	### options
-	 *
-	 *	- 'id' string A regex to find a video id.
-	 *	- 'player' string Base url of the player.
-	 *	- 'map' array A map of options to translate from generic ones to
-	 *		provider-specific ones.
-	 *
-	 *	@var array
-	 */
-
-	protected $_providers = array(
-		'dailymotion' => array(
-			'id' => '#dailymotion\.com/(?:embed/)?video/(?<id>[a-z0-9]+)#i',
-			'player' => 'http://www.dailymotion.com/embed/video/%s',
-			'map' => array(
-				'autoPlay' => 'autoplay',
-				'showInfos' => 'info',
-				'showBranding' => 'logo',
-				'showRelated' => 'related',
-				'backgroundColor' => array(
-					'prefix' => '#',
-					'key' => 'background'
-				),
-				'foregroundColor' => array(
-					'prefix' => '#',
-					'key' => 'foreground'
-				),
-				'highlightColor' => array(
-					'prefix' => '#',
-					'key' => 'highlight'
-				),
-			)
-		),
-		'vimeo' => array(
-			'id' => '#vidsdmeo\.com/(?:video/)?(?<id>[0-9]+)#i',
-			'player' => 'http://player.vimeo.com/video/%s',
-			'map' => array(
-				'autoPlay' => 'autoplay',
-				'showInfos' => array( 'byline', 'portrait' ),
-				'highlightColor' => 'color'
-			)
-		),
-		'youtube' => array(
-			'id' => '#(?:v=|v/|embed/|youtu\.be/)(?<id>[a-z0-9_-]+)#i',
-			'player' => 'http://www.youtube-nocookie.com/embed/%s',
-			'map' => array(
-				'autoPlay' => 'autoplay',
-				'showInfos' => 'showinfo',
-				'showRelated' => 'rel'
+		'wrapper' => '<iframe src="%s" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>',
+		'providers' => array(
+			'dailymotion' => array(
+				'id' => '#dailymotion\.com/(?:embed/)?video/(?<id>[a-z0-9]+)#i',
+				'player' => 'http://www.dailymotion.com/embed/video/%s',
+				'map' => array(
+					'autoPlay' => 'autoplay',
+					'showInfos' => 'info',
+					'showBranding' => 'logo',
+					'showRelated' => 'related',
+					'backgroundColor' => array(
+						'prefix' => '#',
+						'key' => 'background'
+					),
+					'foregroundColor' => array(
+						'prefix' => '#',
+						'key' => 'foreground'
+					),
+					'highlightColor' => array(
+						'prefix' => '#',
+						'key' => 'highlight'
+					),
+				)
+			),
+			'vimeo' => array(
+				'id' => '#vimeo\.com/(?:video/)?(?<id>[0-9]+)#i',
+				'player' => 'http://player.vimeo.com/video/%s',
+				'map' => array(
+					'autoPlay' => 'autoplay',
+					'showInfos' => array( 'byline', 'portrait' ),
+					'highlightColor' => 'color'
+				)
+			),
+			'youtube' => array(
+				'id' => '#(?:v=|v/|embed/|youtu\.be/)(?<id>[a-z0-9_-]+)#i',
+				'player' => 'http://www.youtube-nocookie.com/embed/%s',
+				'map' => array(
+					'autoPlay' => 'autoplay',
+					'showInfos' => 'showinfo',
+					'showRelated' => 'rel'
+				)
 			)
 		)
 	);
@@ -95,13 +95,13 @@ class Multiplayer {
 	/**
 	 *	Constructor.
 	 *
-	 *	@param array $providers A set of providers to be merged with the
+	 *	@param array $options A set of options to be merged with the
 	 *		default ones.
 	 */
 
-	public function __construct( array $providers = array( )) {
+	public function __construct( array $options = array( )) {
 
-		$this->_providers = array_merge( $this->_providers, $providers );
+		$this->_options = array_merge( $this->_options, $options );
 	}
 
 
@@ -124,7 +124,7 @@ class Multiplayer {
 		if ( $providerName ) {
 			$params = $this->_params( $providerName, $options );
 			$url = sprintf(
-				$this->_providers[ $providerName ]['player'],
+				$this->_options['providers'][ $providerName ]['player'],
 				$videoId
 			);
 
@@ -150,7 +150,7 @@ class Multiplayer {
 
 	protected function _providerInfos( $source ) {
 
-		foreach ( $this->_providers as $name => $options ) {
+		foreach ( $this->_options['providers'] as $name => $options ) {
 			if ( preg_match( $options['id'], $source, $matches )) {
 				return array( $name, $matches['id']);
 			}
@@ -173,7 +173,7 @@ class Multiplayer {
 
 		$params = array( );
 
-		foreach ( $this->_providers[ $provider ]['map'] as $key => $value ) {
+		foreach ( $this->_options['providers'][ $provider ]['map'] as $key => $value ) {
 			if ( $options[ $key ] === null ) {
 				continue;
 			}
