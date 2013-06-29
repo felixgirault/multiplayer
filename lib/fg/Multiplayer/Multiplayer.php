@@ -10,13 +10,15 @@ namespace fg\Multiplayer;
 
 
 /**
- *
+ *	Builds HTML embed codes for videos.
  */
 
 class Multiplayer {
 
 	/**
+	 *	Names of the available options.
 	 *
+	 *	@var array
 	 */
 
 	protected $_options = array(
@@ -33,12 +35,21 @@ class Multiplayer {
 
 
 	/**
+	 *	A set of configurations indexed by provider name.
 	 *
+	 *	### options
+	 *
+	 *	- 'id' string A regex to find a video id.
+	 *	- 'player' string Base url of the player.
+	 *	- 'map' array A map of options to translate from generic ones to
+	 *		provider-specific ones.
+	 *
+	 *	@var array
 	 */
 
 	protected $_providers = array(
 		'dailymotion' => array(
-			'id' => '#dailymotion\\.com/(embed/)?video/(?<id>[a-z0-9]+)#i',
+			'id' => '#dailymotion\.com/(?:embed/)?video/(?<id>[a-z0-9]+)#i',
 			'player' => 'http://www.dailymotion.com/embed/video/%s',
 			'map' => array(
 				'autoPlay' => 'autoplay',
@@ -60,7 +71,7 @@ class Multiplayer {
 			)
 		),
 		'vimeo' => array(
-			'id' => '#vimeo\\.com/(video/)?(?<id>[0-9]+)#i',
+			'id' => '#vidsdmeo\.com/(?:video/)?(?<id>[0-9]+)#i',
 			'player' => 'http://player.vimeo.com/video/%s',
 			'map' => array(
 				'autoPlay' => 'autoplay',
@@ -69,7 +80,7 @@ class Multiplayer {
 			)
 		),
 		'youtube' => array(
-			'id' => '#(v=|v/|embed/|youtu\\.be/)(?<id>[a-z0-9_-]+)#i',
+			'id' => '#(?:v=|v/|embed/|youtu\.be/)(?<id>[a-z0-9_-]+)#i',
 			'player' => 'http://www.youtube-nocookie.com/embed/%s',
 			'map' => array(
 				'autoPlay' => 'autoplay',
@@ -82,7 +93,10 @@ class Multiplayer {
 
 
 	/**
+	 *	Constructor.
 	 *
+	 *	@param array $providers A set of providers to be merged with the
+	 *		default ones.
 	 */
 
 	public function __construct( array $providers = array( )) {
@@ -103,7 +117,7 @@ class Multiplayer {
 	public function html( $source, array $options = array( )) {
 
 		$options = array_merge( $this->_options, $options );
-		$html = '';
+		$html = $source;
 
 		list( $providerName, $videoId ) = $this->_providerInfos( $source );
 
@@ -118,9 +132,7 @@ class Multiplayer {
 				$url .= '?' . http_build_query( $params );
 			}
 
-			$html .= sprintf( $options['wrapper'], $url );
-		} else {
-
+			$html = sprintf( $options['wrapper'], $url );
 		}
 
 		return $html;
@@ -129,7 +141,11 @@ class Multiplayer {
 
 
 	/**
+	 *	Finds informations about the provider providing the given source.
 	 *
+	 *	@param string $source URL or HTML code.
+	 *	@return array The name of the provider, and the video id found in the
+	 *		source.
 	 */
 
 	protected function _providerInfos( $source ) {
@@ -146,10 +162,14 @@ class Multiplayer {
 
 
 	/**
+	 *	Builds a set of parameters from the given options, in a format that is
+	 *	understood by the given provider.
 	 *
+	 *	@param string $provider Target provider.
+	 *	@param array $options Generic options.
 	 */
 
-	protected function _params( $provider, $options ) {
+	protected function _params( $provider, array $options ) {
 
 		$params = array( );
 
