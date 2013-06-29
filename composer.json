@@ -1,7 +1,7 @@
 {
 	"name": "fg/multiplayer",
 	"type": "library",
-	"description": "A tiny library to build nice HTML embed codes for videos.",
+	"description": "Builds customizable video embed codes from any URL.",
 	"version": "0.0.1",
 	"authors": [{
 		"name": "Félix Girault",
@@ -10,10 +10,11 @@
 		"role": "Developer"
 	}],
 	"keywords": [
-		"embed",
+		"video",
 		"player",
-		"iframe",
-		"video"
+		"embed",
+		"html",
+		"media"
 	],
 	"licence": "BSD-2-Clause",
 	"homepage": "http://github.com/felixgirault/multiplayer",
