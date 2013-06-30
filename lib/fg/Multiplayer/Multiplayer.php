@@ -57,15 +57,15 @@ class Multiplayer {
 					'showRelated' => 'related',
 					'backgroundColor' => array(
 						'prefix' => '#',
-						'key' => 'background'
+						'param' => 'background'
 					),
 					'foregroundColor' => array(
 						'prefix' => '#',
-						'key' => 'foreground'
+						'param' => 'foreground'
 					),
 					'highlightColor' => array(
 						'prefix' => '#',
-						'key' => 'highlight'
+						'param' => 'highlight'
 					),
 				)
 			),
@@ -174,20 +174,24 @@ class Multiplayer {
 		$params = array( );
 
 		foreach ( $this->_options['providers'][ $provider ]['map'] as $key => $value ) {
-			if ( $options[ $key ] === null ) {
+			if ( empty( $options[ $key ])) {
 				continue;
 			}
 
-			if ( is_array( $value )) {
-				$paramName = $value['key'];
-				$paramValue = $options[ $paramName ];
+			$paramValue = $options[ $key ];
 
-				if ( isset( $value['prefix'])) {
+			if ( is_array( $value )) {
+				if ( empty( $value['param'])) {
+					continue;
+				}
+
+				$paramName = $value['param'];
+
+				if ( $paramValue && isset( $value['prefix'])) {
 					$paramValue = $value['prefix'] . $paramValue;
 				}
 			} else {
 				$paramName = $value;
-				$paramValue = $options[ $key ];
 			}
 
 			$params[ $paramName ] = $paramValue;
