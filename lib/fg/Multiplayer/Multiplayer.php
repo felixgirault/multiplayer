@@ -20,32 +20,35 @@ class Multiplayer {
 	 *
 	 *	### options
 	 *
-	 *	- 'autoPlay' boolean Whether or not to start the video when it is loaded.
-	 *	- 'showInfos' boolean
-	 *	- 'showBranding' boolean
-	 *	- 'showRelated' boolean Whether or not to show related videos at the end.
-	 *	- 'backgroundColor' string Color code of the player's background.
-	 *	- 'foregroundColor' string Color code of the player's foreground.
-	 *	- 'highlightColor' string Color code of the player's .
 	 *	- 'wrapper' string A HTML code to wrap the video url.
+	 *	- 'params' array A set of generic parameters.
+	 *		- 'autoPlay' boolean Whether or not to start the video when it is loaded.
+	 *		- 'showInfos' boolean
+	 *		- 'showBranding' boolean
+	 *		- 'showRelated' boolean Whether or not to show related videos at the end.
+	 *		- 'backgroundColor' string Hex code of the player's background color.
+	 *		- 'foregroundColor' string Hex code of the player's foreground color.
+	 *		- 'highlightColor' string Hex code of the player's highlight color.
 	 *	- 'providers' array A set of configurations indexed by provider name.
 	 *		- 'id' string A regex to find a video id.
 	 *		- 'player' string Base url of the player.
-	 *		- 'map' array A map of options to translate from generic ones to
-	 *			provider-specific ones.
+	 *		- 'map' array A map of parameters to translate from generic ones
+	 *			to provider-specific ones.
 	 *
 	 *	@var array
 	 */
 
 	protected $_options = array(
-		'autoPlay' => null,
-		'showInfos' => null,
-		'showBranding' => null,
-		'showRelated' => null,
-		'backgroundColor' => null,
-		'foregroundColor' => null,
-		'highlightColor' => null,
 		'wrapper' => '<iframe src="%s" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>',
+		'params' => array(
+			'autoPlay' => null,
+			'showInfos' => null,
+			'showBranding' => null,
+			'showRelated' => null,
+			'backgroundColor' => null,
+			'foregroundColor' => null,
+			'highlightColor' => null,
+		),
 		'providers' => array(
 			'dailymotion' => array(
 				'id' => '#dailymotion\.com/(?:embed/)?video/(?<id>[a-z0-9]+)#i',
@@ -110,19 +113,19 @@ class Multiplayer {
 	 *	Prepares an HTML embed code.
 	 *
 	 *	@param string $source URL or HTML code.
-	 *	@param array $options
+	 *	@param array $params
 	 *	@return string Prepared HTML code.
 	 */
 
-	public function html( $source, array $options = array( )) {
+	public function html( $source, array $params = array( )) {
 
-		$options = array_merge( $this->_options, $options );
+		$params += $this->_options['params'];
 		$html = $source;
 
 		list( $providerName, $videoId ) = $this->_providerInfos( $source );
 
 		if ( $providerName ) {
-			$params = $this->_params( $providerName, $options );
+			$params = $this->_params( $providerName, $params );
 			$url = sprintf(
 				$this->_options['providers'][ $providerName ]['player'],
 				$videoId
@@ -132,7 +135,7 @@ class Multiplayer {
 				$url .= '?' . http_build_query( $params );
 			}
 
-			$html = sprintf( $options['wrapper'], $url );
+			$html = sprintf( $this->_options['wrapper'], $url );
 		}
 
 		return $html;
