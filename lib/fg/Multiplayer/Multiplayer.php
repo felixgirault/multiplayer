@@ -122,12 +122,16 @@ class Multiplayer {
 		$params += $this->_options['params'];
 		$html = $source;
 
-		list( $providerName, $videoId ) = $this->_providerInfos( $source );
+		list( $provider, $videoId ) = $this->_providerInfos( $source );
 
-		if ( $providerName ) {
-			$params = $this->_params( $providerName, $params );
+		if ( $provider ) {
+			$params = $this->_mappedParams(
+				$this->_options['providers'][ $provider ]['map'],
+				$params
+			);
+
 			$url = sprintf(
-				$this->_options['providers'][ $providerName ]['player'],
+				$this->_options['providers'][ $provider ]['player'],
 				$videoId
 			);
 
@@ -165,41 +169,50 @@ class Multiplayer {
 
 
 	/**
-	 *	Builds a set of parameters from the given options, in a format that is
-	 *	understood by the given provider.
+	 *	Builds and returns an array of mapped parameters.
 	 *
-	 *	@param string $provider Target provider.
-	 *	@param array $options Generic options.
+	 *	@param array $map A map to translate the parameters.
+	 *	@param array $options Generic parameters.
 	 */
 
-	protected function _params( $provider, array $options ) {
+	protected function _mappedParams( array $map, array $params ) {
 
-		$params = array( );
+		$mapped = array( );
 
-		foreach ( $this->_options['providers'][ $provider ]['map'] as $key => $value ) {
-			if ( empty( $options[ $key ])) {
+		// translation from generic parameters to specific ones
+
+		foreach ( $map as $generic => $specific ) {
+			if ( empty( $params[ $generic ])) {
 				continue;
 			}
 
-			$paramValue = $options[ $key ];
+			$value = $params[ $generic ];
 
-			if ( is_array( $value )) {
-				if ( empty( $value['param'])) {
+			if ( is_array( $specific )) {
+				if ( empty( $specific['param'])) {
 					continue;
 				}
 
-				$paramName = $value['param'];
+				$param = $specific['param'];
 
-				if ( $paramValue && isset( $value['prefix'])) {
-					$paramValue = $value['prefix'] . $paramValue;
+				if ( $value && isset( $specific['prefix'])) {
+					$value = $specific['prefix'] . $value;
 				}
 			} else {
-				$paramName = $value;
+				$param = $specific;
 			}
 
-			$params[ $paramName ] = $paramValue;
+			$mapped[ $param ] = $value;
 		}
 
-		return $params;
+		// handling of non generic parameters
+
+		$extra = array_diff_key( $params, $this->_options['params']);
+
+		if ( !empty( $extra )) {
+			$mapped = array_merge( $mapped, $extra );
+		}
+
+		return $mapped;
 	}
 }
