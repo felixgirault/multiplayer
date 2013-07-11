@@ -2,7 +2,7 @@
 	"name": "fg/multiplayer",
 	"type": "library",
 	"description": "Builds customizable video embed codes from any URL.",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"authors": [{
 		"name": "Félix Girault",
 		"email": "felix.girault@gmail.com",
