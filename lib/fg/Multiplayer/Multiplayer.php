@@ -29,6 +29,7 @@ class Multiplayer {
 	 *		- 'backgroundColor' string Hex code of the player's background color.
 	 *		- 'foregroundColor' string Hex code of the player's foreground color.
 	 *		- 'highlightColor' string Hex code of the player's highlight color.
+	 *		- 'start' int The number of seconds at which the video must start.
 	 *	- 'providers' array A set of configurations indexed by provider name.
 	 *		- 'id' string A regex to find a video id.
 	 *		- 'player' string Base url of the player.
@@ -48,6 +49,7 @@ class Multiplayer {
 			'backgroundColor' => null,
 			'foregroundColor' => null,
 			'highlightColor' => null,
+			'start' => null
 		),
 		'providers' => array(
 			'dailymotion' => array(
