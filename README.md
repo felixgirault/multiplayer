@@ -9,9 +9,7 @@ Example
 Here's how you could create a customized code for a video from Vimeo:
 
 ```php
-<?php
-
-$Multiplayer = new fg\Multiplayer\Multiplayer( );
+$Multiplayer = new Multiplayer\Multiplayer( );
 
 echo $Multiplayer->html(
 	'http://vimeo.com/47457051',
@@ -20,8 +18,6 @@ echo $Multiplayer->html(
 		'highlightColor' => 'BADA55'
 	)
 );
-
-?>
 ```
 
 This code would produce:
