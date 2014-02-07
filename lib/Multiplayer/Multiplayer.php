@@ -56,20 +56,20 @@ class Multiplayer {
 
 
 	/**
-	 *	A set of configurations indexed by provider name.
+	 *	A set of configurations indexed by service name.
 	 *
 	 *	### options
 	 *
-	 *	- string Name of the provider.
+	 *	- string Name of the service.
 	 *		- 'id' string A regex to find a video id.
 	 *		- 'url' string Base URL of the player.
 	 *		- 'map' array A map of parameters to translate from generic ones
-	 *			to provider-specific ones.
+	 *			to service-specific ones.
 	 *
 	 *	@var array
 	 */
 
-	protected $_providers = array(
+	protected $_services = array(
 		'dailymotion' => array(
 			'id' => '#dailymotion\.com/(?:embed/)?video/(?<id>[a-z0-9]+)#i',
 			'url' => 'http://www.dailymotion.com/embed/video/%s',
@@ -117,13 +117,13 @@ class Multiplayer {
 	/**
 	 *	Constructor.
 	 *
-	 *	@param array $providers A set of providers to be merged with the
+	 *	@param array $services A set of services to be merged with the
 	 *		default ones.
 	 */
 
-	public function __construct( array $providers = array( )) {
+	public function __construct( array $services = array( )) {
 
-		$this->_providers = array_merge( $this->_providers, $providers );
+		$this->_services = array_merge( $this->_services, $services );
 	}
 
 
@@ -142,7 +142,7 @@ class Multiplayer {
 		$params += $this->_params;
 		$id = null;
 
-		foreach ( $this->_providers as $provider => $config ) {
+		foreach ( $this->_services as $service => $config ) {
 			if ( preg_match( $config['id'], $source, $matches )) {
 				$id = $matches['id'];
 				break;
@@ -150,8 +150,8 @@ class Multiplayer {
 		}
 
 		if ( $id ) {
-			$params = $this->_mapped( $this->_providers[ $provider ]['map'], $params );
-			$url = sprintf( $this->_providers[ $provider ]['url'], $id );
+			$params = $this->_mapped( $this->_services[ $service ]['map'], $params );
+			$url = sprintf( $this->_services[ $service ]['url'], $id );
 
 			if ( $params ) {
 				$url .= '?' . http_build_query( $params );
