@@ -21,7 +21,7 @@ echo $Multiplayer->html( 'http://www.youtube.com/watch?v=3qSMS4c5WAk', $options 
 This code would produce:
 
 ```html
-<iframe src="http://www.dailymotion.com/embed/video/xzn5qk?autoplay=1&foreground=#BADA55" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
-<iframe src="http://player.vimeo.com/video/47457051?autoplay=1&color=BADA55" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
-<iframe src="http://www.youtube-nocookie.com/embed/3qSMS4c5WAk?autoplay=1" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen=""></iframe>
+<iframe src="http://www.dailymotion.com/embed/video/xzn5qk?autoplay=1&foreground=#BADA55" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+<iframe src="http://player.vimeo.com/video/47457051?autoplay=1&color=BADA55" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+<iframe src="http://www.youtube-nocookie.com/embed/3qSMS4c5WAk?autoplay=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 ```
