@@ -98,7 +98,7 @@ class Multiplayer {
 			'map' => array(
 				'autoPlay' => 'autoplay',
 				'showInfos' => array( 'byline', 'portrait' ),
-				'highlightColor' => 'color'
+				'foregroundColor' => 'color'
 			)
 		),
 		'youtube' => array(
