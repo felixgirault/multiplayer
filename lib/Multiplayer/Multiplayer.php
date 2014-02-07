@@ -179,24 +179,26 @@ class Multiplayer {
 		// translation from generic parameters to specific ones
 
 		foreach ( $map as $generic => $specific ) {
-			if ( !empty( $params[ $generic ])) {
+			if ( isset( $params[ $generic ])) {
 				$value = $params[ $generic ];
 
 				if ( is_array( $specific )) {
-					if ( empty( $specific['param'])) {
-						continue;
-					}
+					if ( isset( $specific['param'])) {
+						$param = $specific['param'];
 
-					$param = $specific['param'];
+						if ( $value && isset( $specific['prefix'])) {
+							$value = $specific['prefix'] . $value;
+						}
 
-					if ( $value && isset( $specific['prefix'])) {
-						$value = $specific['prefix'] . $value;
+						$mapped[ $param ] = $value;
+					} else {
+						foreach ( $specific as $param ) {
+							$mapped[ $param ] = $value;
+						}
 					}
 				} else {
-					$param = $specific;
+					$mapped[ $specific ] = $value;
 				}
-
-				$mapped[ $param ] = $value;
 			}
 		}
 
