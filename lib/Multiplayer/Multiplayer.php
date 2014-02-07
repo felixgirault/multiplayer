@@ -16,21 +16,51 @@ namespace Multiplayer;
 class Multiplayer {
 
 	/**
-	 *	Names of the available options.
+	 *	A HTML code to wrap a player URL.
+	 *
+	 *	@var string
+	 */
+
+	const wrapper = '<iframe src="%s" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
+
+
+
+	/**
+	 *	A set of generic parameters.
+	 *
+	 *	### Options
+	 *
+	 *	- 'autoPlay' boolean Whether or not to start the video when it is loaded.
+	 *	- 'showInfos' boolean
+	 *	- 'showBranding' boolean
+	 *	- 'showRelated' boolean Whether or not to show related videos at the end.
+	 *	- 'backgroundColor' string Hex code of the player's background color.
+	 *	- 'foregroundColor' string Hex code of the player's foreground color.
+	 *	- 'highlightColor' string Hex code of the player's highlight color.
+	 *	- 'start' int The number of seconds at which the video must start.
+	 *
+	 *	@var array
+	 */
+
+	protected $_params = array(
+		'autoPlay' => null,
+		'showInfos' => null,
+		'showBranding' => null,
+		'showRelated' => null,
+		'backgroundColor' => null,
+		'foregroundColor' => null,
+		'highlightColor' => null,
+		'start' => null
+	);
+
+
+
+	/**
+	 *	A set of configurations indexed by provider name.
 	 *
 	 *	### options
 	 *
-	 *	- 'wrapper' string A HTML code to wrap the video url.
-	 *	- 'params' array A set of generic parameters.
-	 *		- 'autoPlay' boolean Whether or not to start the video when it is loaded.
-	 *		- 'showInfos' boolean
-	 *		- 'showBranding' boolean
-	 *		- 'showRelated' boolean Whether or not to show related videos at the end.
-	 *		- 'backgroundColor' string Hex code of the player's background color.
-	 *		- 'foregroundColor' string Hex code of the player's foreground color.
-	 *		- 'highlightColor' string Hex code of the player's highlight color.
-	 *		- 'start' int The number of seconds at which the video must start.
-	 *	- 'providers' array A set of configurations indexed by provider name.
+	 *	- string Name of the provider.
 	 *		- 'id' string A regex to find a video id.
 	 *		- 'player' string Base url of the player.
 	 *		- 'map' array A map of parameters to translate from generic ones
@@ -39,58 +69,45 @@ class Multiplayer {
 	 *	@var array
 	 */
 
-	protected $_options = array(
-		'wrapper' => '<iframe src="%s" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>',
-		'params' => array(
-			'autoPlay' => null,
-			'showInfos' => null,
-			'showBranding' => null,
-			'showRelated' => null,
-			'backgroundColor' => null,
-			'foregroundColor' => null,
-			'highlightColor' => null,
-			'start' => null
+	protected $_providers = array(
+		'dailymotion' => array(
+			'id' => '#dailymotion\.com/(?:embed/)?video/(?<id>[a-z0-9]+)#i',
+			'player' => 'http://www.dailymotion.com/embed/video/%s',
+			'map' => array(
+				'autoPlay' => 'autoplay',
+				'showInfos' => 'info',
+				'showBranding' => 'logo',
+				'showRelated' => 'related',
+				'backgroundColor' => array(
+					'prefix' => '#',
+					'param' => 'background'
+				),
+				'foregroundColor' => array(
+					'prefix' => '#',
+					'param' => 'foreground'
+				),
+				'highlightColor' => array(
+					'prefix' => '#',
+					'param' => 'highlight'
+				),
+			)
 		),
-		'providers' => array(
-			'dailymotion' => array(
-				'id' => '#dailymotion\.com/(?:embed/)?video/(?<id>[a-z0-9]+)#i',
-				'player' => 'http://www.dailymotion.com/embed/video/%s',
-				'map' => array(
-					'autoPlay' => 'autoplay',
-					'showInfos' => 'info',
-					'showBranding' => 'logo',
-					'showRelated' => 'related',
-					'backgroundColor' => array(
-						'prefix' => '#',
-						'param' => 'background'
-					),
-					'foregroundColor' => array(
-						'prefix' => '#',
-						'param' => 'foreground'
-					),
-					'highlightColor' => array(
-						'prefix' => '#',
-						'param' => 'highlight'
-					),
-				)
-			),
-			'vimeo' => array(
-				'id' => '#vimeo\.com/(?:video/)?(?<id>[0-9]+)#i',
-				'player' => 'http://player.vimeo.com/video/%s',
-				'map' => array(
-					'autoPlay' => 'autoplay',
-					'showInfos' => array( 'byline', 'portrait' ),
-					'highlightColor' => 'color'
-				)
-			),
-			'youtube' => array(
-				'id' => '#(?:v=|v/|embed/|youtu\.be/)(?<id>[a-z0-9_-]+)#i',
-				'player' => 'http://www.youtube-nocookie.com/embed/%s',
-				'map' => array(
-					'autoPlay' => 'autoplay',
-					'showInfos' => 'showinfo',
-					'showRelated' => 'rel'
-				)
+		'vimeo' => array(
+			'id' => '#vimeo\.com/(?:video/)?(?<id>[0-9]+)#i',
+			'player' => 'http://player.vimeo.com/video/%s',
+			'map' => array(
+				'autoPlay' => 'autoplay',
+				'showInfos' => array( 'byline', 'portrait' ),
+				'highlightColor' => 'color'
+			)
+		),
+		'youtube' => array(
+			'id' => '#(?:v=|v/|embed/|youtu\.be/)(?<id>[a-z0-9_-]+)#i',
+			'player' => 'http://www.youtube-nocookie.com/embed/%s',
+			'map' => array(
+				'autoPlay' => 'autoplay',
+				'showInfos' => 'showinfo',
+				'showRelated' => 'rel'
 			)
 		)
 	);
@@ -100,40 +117,41 @@ class Multiplayer {
 	/**
 	 *	Constructor.
 	 *
-	 *	@param array $options A set of options to be merged with the
+	 *	@param array $providers A set of providers to be merged with the
 	 *		default ones.
 	 */
 
-	public function __construct( array $options = array( )) {
+	public function __construct( array $providers = array( )) {
 
-		$this->_options = array_merge( $this->_options, $options );
+		$this->_providers = array_merge( $this->_providers, $providers );
 	}
 
 
 
 	/**
-	 *	Prepares an HTML embed code.
+	 *	Builds and returns an HTML embed code.
 	 *
 	 *	@param string $source URL or HTML code.
-	 *	@param array $params
+	 *	@param array $params Player configuration.
+	 *	@param string $wrapper HTML code surrounding the player URL.
 	 *	@return string Prepared HTML code.
 	 */
 
-	public function html( $source, array $params = array( )) {
+	public function html( $source, array $params = array( ), $wrapper = self::wrapper ) {
 
-		$params += $this->_options['params'];
+		$params += $this->_params;
 		$html = $source;
 
 		list( $provider, $videoId ) = $this->_providerInfos( $source );
 
 		if ( $provider ) {
 			$params = $this->_mappedParams(
-				$this->_options['providers'][ $provider ]['map'],
+				$this->_providers[ $provider ]['map'],
 				$params
 			);
 
 			$url = sprintf(
-				$this->_options['providers'][ $provider ]['player'],
+				$this->_providers[ $provider ]['player'],
 				$videoId
 			);
 
@@ -141,7 +159,7 @@ class Multiplayer {
 				$url .= '?' . http_build_query( $params );
 			}
 
-			$html = sprintf( $this->_options['wrapper'], $url );
+			$html = sprintf( $wrapper, $url );
 		}
 
 		return $html;
@@ -159,7 +177,7 @@ class Multiplayer {
 
 	protected function _providerInfos( $source ) {
 
-		foreach ( $this->_options['providers'] as $name => $options ) {
+		foreach ( $this->_providers as $name => $options ) {
 			if ( preg_match( $options['id'], $source, $matches )) {
 				return array( $name, $matches['id']);
 			}
@@ -209,7 +227,7 @@ class Multiplayer {
 
 		// handling of non generic parameters
 
-		$extra = array_diff_key( $params, $this->_options['params']);
+		$extra = array_diff_key( $params, $this->_params );
 
 		if ( !empty( $extra )) {
 			$mapped = array_merge( $mapped, $extra );
