@@ -102,7 +102,7 @@ class Multiplayer {
 			)
 		),
 		'youtube' => array(
-			'id' => '#(?:v=|v/|embed/|youtu\.be/)(?<id>[a-z0-9_-]+)#i',
+			'id' => '#(?:youtu\.be/|youtube.com/(?:v/|embed/|watch\?v=))(?<id>[a-z0-9_-]+)#i',
 			'url' => 'http://www.youtube-nocookie.com/embed/%s',
 			'map' => array(
 				'autoPlay' => 'autoplay',
