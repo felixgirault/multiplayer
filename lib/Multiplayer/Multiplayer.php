@@ -46,7 +46,7 @@ HTML;
 	 *
 	 *	@var array
 	 */
-	protected $_params = array(
+	protected $_params = [
 		'autoPlay' => null,
 		'showInfos' => null,
 		'showBranding' => null,
@@ -55,7 +55,7 @@ HTML;
 		'foregroundColor' => null,
 		'highlightColor' => null,
 		'start' => null
-	);
+	];
 
 
 
@@ -72,48 +72,48 @@ HTML;
 	 *
 	 *	@var array
 	 */
-	protected $_services = array(
-		'dailymotion' => array(
+	protected $_services = [
+		'dailymotion' => [
 			'id' => '#dailymotion\.com/(?:embed/)?video/(?<id>[a-z0-9]+)#i',
 			'url' => '//www.dailymotion.com/embed/video/%s',
-			'map' => array(
+			'map' => [
 				'autoPlay' => 'autoplay',
 				'showInfos' => 'info',
 				'showBranding' => 'logo',
 				'showRelated' => 'related',
-				'backgroundColor' => array(
+				'backgroundColor' => [
 					'prefix' => '#',
 					'param' => 'background'
-				),
-				'foregroundColor' => array(
+				],
+				'foregroundColor' => [
 					'prefix' => '#',
 					'param' => 'foreground'
-				),
-				'highlightColor' => array(
+				],
+				'highlightColor' => [
 					'prefix' => '#',
 					'param' => 'highlight'
-				),
-			)
-		),
-		'vimeo' => array(
+				],
+			]
+		],
+		'vimeo' => [
 			'id' => '#vimeo\.com/(?:video/)?(?<id>[0-9]+)#i',
 			'url' => '//player.vimeo.com/video/%s',
-			'map' => array(
+			'map' => [
 				'autoPlay' => 'autoplay',
-				'showInfos' => array('byline', 'portrait'),
+				'showInfos' => ['byline', 'portrait'],
 				'foregroundColor' => 'color'
-			)
-		),
-		'youtube' => array(
+			]
+		],
+		'youtube' => [
 			'id' => '#(?:youtu\.be/|youtube.com/(?:v/|embed/|watch\?v=))(?<id>[a-z0-9_-]+)#i',
 			'url' => '//www.youtube-nocookie.com/embed/%s',
-			'map' => array(
+			'map' => [
 				'autoPlay' => 'autoplay',
 				'showInfos' => 'showinfo',
 				'showRelated' => 'rel'
-			)
-		)
-	);
+			]
+		]
+	];
 
 
 
@@ -123,7 +123,7 @@ HTML;
 	 *	@param array $services A set of services to be merged with the
 	 *		default ones.
 	 */
-	public function __construct(array $services = array()) {
+	public function __construct(array $services = []) {
 		$this->_services = array_merge($this->_services, $services);
 	}
 
@@ -137,7 +137,7 @@ HTML;
 	 *	@param string $wrapper HTML code surrounding the player URL.
 	 *	@return string Prepared HTML code.
 	 */
-	public function html($source, array $params = array(), $wrapper = self::wrapper) {
+	public function html($source, array $params = [], $wrapper = self::wrapper) {
 		$params += $this->_params;
 		$id = null;
 
@@ -171,7 +171,7 @@ HTML;
 	 *	@param array $options Generic parameters.
 	 */
 	protected function _mapped(array $map, array $params) {
-		$mapped = array();
+		$mapped = [];
 
 		// translation from generic parameters to specific ones
 

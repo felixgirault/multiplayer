@@ -25,17 +25,17 @@ class MultiplayerTest extends PHPUnit_Framework_TestCase {
 	/**
 	 *
 	 */
-	public $services = array(
-		'service' => array(
+	public $services = [
+		'service' => [
 			'id' => '#service\.com/video/(?<id>[0-9]+)#i',
 			'url' => 'http://service.com/player/%s',
-			'map' => array(
+			'map' => [
 				'autoPlay' => 'play',
-				'showInfos' => array('title', 'author'),
+				'showInfos' => ['title', 'author'],
 				'highlightColor' => 'color'
-			)
-		)
-	);
+			]
+		]
+	];
 
 
 
@@ -54,7 +54,7 @@ class MultiplayerTest extends PHPUnit_Framework_TestCase {
 	public function testHtml() {
 		$this->assertEquals(
 			'http://service.com/player/42',
-			$this->Multiplayer->html('service.com/video/42', array(), '%s')
+			$this->Multiplayer->html('service.com/video/42', [], '%s')
 		);
 	}
 
@@ -66,7 +66,7 @@ class MultiplayerTest extends PHPUnit_Framework_TestCase {
 	public function testHtmlWithParam() {
 		$this->assertEquals(
 			'http://service.com/player/42?foo=bar',
-			$this->Multiplayer->html('service.com/video/42', array('foo' => 'bar'), '%s')
+			$this->Multiplayer->html('service.com/video/42', ['foo' => 'bar'], '%s')
 		);
 	}
 
@@ -78,12 +78,12 @@ class MultiplayerTest extends PHPUnit_Framework_TestCase {
 	public function testHtmlWithMappedParam() {
 		$this->assertEquals(
 			'http://service.com/player/42?play=1',
-			$this->Multiplayer->html('service.com/video/42', array('autoPlay' => true), '%s')
+			$this->Multiplayer->html('service.com/video/42', ['autoPlay' => true], '%s')
 		);
 
 		$this->assertEquals(
 			'http://service.com/player/42?title=1&author=1',
-			$this->Multiplayer->html('service.com/video/42', array('showInfos' => true), '%s')
+			$this->Multiplayer->html('service.com/video/42', ['showInfos' => true], '%s')
 		);
 	}
 }
