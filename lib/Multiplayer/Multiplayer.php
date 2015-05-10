@@ -72,7 +72,7 @@ class Multiplayer {
 	protected $_services = array(
 		'dailymotion' => array(
 			'id' => '#dailymotion\.com/(?:embed/)?video/(?<id>[a-z0-9]+)#i',
-			'url' => 'http://www.dailymotion.com/embed/video/%s',
+			'url' => '//www.dailymotion.com/embed/video/%s',
 			'map' => array(
 				'autoPlay' => 'autoplay',
 				'showInfos' => 'info',
@@ -94,7 +94,7 @@ class Multiplayer {
 		),
 		'vimeo' => array(
 			'id' => '#vimeo\.com/(?:video/)?(?<id>[0-9]+)#i',
-			'url' => 'http://player.vimeo.com/video/%s',
+			'url' => '//player.vimeo.com/video/%s',
 			'map' => array(
 				'autoPlay' => 'autoplay',
 				'showInfos' => array( 'byline', 'portrait' ),
@@ -103,7 +103,7 @@ class Multiplayer {
 		),
 		'youtube' => array(
 			'id' => '#(?:youtu\.be/|youtube.com/(?:v/|embed/|watch\?v=))(?<id>[a-z0-9_-]+)#i',
-			'url' => 'http://www.youtube-nocookie.com/embed/%s',
+			'url' => '//www.youtube-nocookie.com/embed/%s',
 			'map' => array(
 				'autoPlay' => 'autoplay',
 				'showInfos' => 'showinfo',
