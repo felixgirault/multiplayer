@@ -6,6 +6,8 @@
  */
 namespace Multiplayer;
 
+use Multiplayer\Param;
+
 
 
 /**
@@ -33,28 +35,17 @@ HTML;
 	/**
 	 *	A set of generic parameters.
 	 *
-	 *	### Options
-	 *
-	 *	- 'autoPlay' boolean Whether or not to start the video when it is loaded.
-	 *	- 'showInfos' boolean
-	 *	- 'showBranding' boolean
-	 *	- 'showRelated' boolean Whether or not to show related videos at the end.
-	 *	- 'backgroundColor' string Hex code of the player's background color.
-	 *	- 'foregroundColor' string Hex code of the player's foreground color.
-	 *	- 'highlightColor' string Hex code of the player's highlight color.
-	 *	- 'start' int The number of seconds at which the video must start.
-	 *
 	 *	@var array
 	 */
 	protected $_params = [
-		'autoPlay' => null,
-		'showInfos' => null,
-		'showBranding' => null,
-		'showRelated' => null,
-		'backgroundColor' => null,
-		'foregroundColor' => null,
-		'highlightColor' => null,
-		'start' => null
+		Param::autoPlay => null,
+		Param::showInfos => null,
+		Param::showBranding => null,
+		Param::showRelated => null,
+		Param::backgroundColor => null,
+		Param::foregroundColor => null,
+		Param::highlightColor => null,
+		Param::start => null
 	];
 
 
@@ -77,19 +68,19 @@ HTML;
 			'id' => '#dailymotion\.com/(?:embed/)?video/(?<id>[a-z0-9]+)#i',
 			'url' => '//www.dailymotion.com/embed/video/%s',
 			'map' => [
-				'autoPlay' => 'autoplay',
-				'showInfos' => 'info',
-				'showBranding' => 'logo',
-				'showRelated' => 'related',
-				'backgroundColor' => [
+				Param::autoPlay => 'autoplay',
+				Param::showInfos => 'info',
+				Param::showBranding => 'logo',
+				Param::showRelated => 'related',
+				Param::backgroundColor => [
 					'prefix' => '#',
 					'param' => 'background'
 				],
-				'foregroundColor' => [
+				Param::foregroundColor => [
 					'prefix' => '#',
 					'param' => 'foreground'
 				],
-				'highlightColor' => [
+				Param::highlightColor => [
 					'prefix' => '#',
 					'param' => 'highlight'
 				],
@@ -99,18 +90,18 @@ HTML;
 			'id' => '#vimeo\.com/(?:video/)?(?<id>[0-9]+)#i',
 			'url' => '//player.vimeo.com/video/%s',
 			'map' => [
-				'autoPlay' => 'autoplay',
-				'showInfos' => ['byline', 'portrait'],
-				'foregroundColor' => 'color'
+				Param::autoPlay => 'autoplay',
+				Param::showInfos => ['byline', 'portrait'],
+				Param::foregroundColor => 'color'
 			]
 		],
 		'youtube' => [
 			'id' => '#(?:youtu\.be/|youtube.com/(?:v/|embed/|watch\?v=))(?<id>[a-z0-9_-]+)#i',
 			'url' => '//www.youtube-nocookie.com/embed/%s',
 			'map' => [
-				'autoPlay' => 'autoplay',
-				'showInfos' => 'showinfo',
-				'showRelated' => 'rel'
+				Param::autoPlay => 'autoplay',
+				Param::showInfos => 'showinfo',
+				Param::showRelated => 'rel'
 			]
 		]
 	];
