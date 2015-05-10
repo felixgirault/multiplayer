@@ -4,7 +4,6 @@
  *	@author Félix Girault <felix.girault@gmail.com>
  *	@license FreeBSD License (http://opensource.org/licenses/BSD-2-Clause)
  */
-
 namespace Multiplayer;
 
 
@@ -12,7 +11,6 @@ namespace Multiplayer;
 /**
  *	Builds HTML embed codes for videos.
  */
-
 class Multiplayer {
 
 	/**
@@ -20,8 +18,15 @@ class Multiplayer {
 	 *
 	 *	@var string
 	 */
-
-	const wrapper = '<iframe src="%s" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
+	const wrapper = <<<HTML
+		<iframe
+			src="%s"
+			frameborder="0"
+			webkitAllowFullScreen
+			mozallowfullscreen
+			allowFullScreen
+		></iframe>
+HTML;
 
 
 
@@ -41,7 +46,6 @@ class Multiplayer {
 	 *
 	 *	@var array
 	 */
-
 	protected $_params = array(
 		'autoPlay' => null,
 		'showInfos' => null,
@@ -68,7 +72,6 @@ class Multiplayer {
 	 *
 	 *	@var array
 	 */
-
 	protected $_services = array(
 		'dailymotion' => array(
 			'id' => '#dailymotion\.com/(?:embed/)?video/(?<id>[a-z0-9]+)#i',
@@ -97,7 +100,7 @@ class Multiplayer {
 			'url' => '//player.vimeo.com/video/%s',
 			'map' => array(
 				'autoPlay' => 'autoplay',
-				'showInfos' => array( 'byline', 'portrait' ),
+				'showInfos' => array('byline', 'portrait'),
 				'foregroundColor' => 'color'
 			)
 		),
@@ -120,10 +123,8 @@ class Multiplayer {
 	 *	@param array $services A set of services to be merged with the
 	 *		default ones.
 	 */
-
-	public function __construct( array $services = array( )) {
-
-		$this->_services = array_merge( $this->_services, $services );
+	public function __construct(array $services = array()) {
+		$this->_services = array_merge($this->_services, $services);
 	}
 
 
@@ -136,28 +137,26 @@ class Multiplayer {
 	 *	@param string $wrapper HTML code surrounding the player URL.
 	 *	@return string Prepared HTML code.
 	 */
-
-	public function html( $source, array $params = array( ), $wrapper = self::wrapper ) {
-
+	public function html($source, array $params = array(), $wrapper = self::wrapper) {
 		$params += $this->_params;
 		$id = null;
 
-		foreach ( $this->_services as $service => $config ) {
-			if ( preg_match( $config['id'], $source, $matches )) {
+		foreach ($this->_services as $service => $config) {
+			if (preg_match($config['id'], $source, $matches)) {
 				$id = $matches['id'];
 				break;
 			}
 		}
 
-		if ( $id ) {
-			$params = $this->_mapped( $this->_services[ $service ]['map'], $params );
-			$url = sprintf( $this->_services[ $service ]['url'], $id );
+		if ($id) {
+			$params = $this->_mapped($this->_services[$service]['map'], $params);
+			$url = sprintf($this->_services[$service]['url'], $id);
 
-			if ( $params ) {
-				$url .= '?' . http_build_query( $params );
+			if ($params) {
+				$url .= '?' . http_build_query($params);
 			}
 
-			$source = sprintf( $wrapper, $url );
+			$source = sprintf($wrapper, $url);
 		}
 
 		return $source;
@@ -171,43 +170,41 @@ class Multiplayer {
 	 *	@param array $map A map to translate the parameters.
 	 *	@param array $options Generic parameters.
 	 */
-
-	protected function _mapped( array $map, array $params ) {
-
-		$mapped = array( );
+	protected function _mapped(array $map, array $params) {
+		$mapped = array();
 
 		// translation from generic parameters to specific ones
 
-		foreach ( $map as $generic => $specific ) {
-			if ( isset( $params[ $generic ])) {
-				$value = $params[ $generic ];
+		foreach ($map as $generic => $specific) {
+			if (isset($params[$generic])) {
+				$value = $params[$generic];
 
-				if ( is_array( $specific )) {
-					if ( isset( $specific['param'])) {
+				if (is_array($specific)) {
+					if (isset($specific['param'])) {
 						$param = $specific['param'];
 
-						if ( $value && isset( $specific['prefix'])) {
+						if ($value && isset($specific['prefix'])) {
 							$value = $specific['prefix'] . $value;
 						}
 
-						$mapped[ $param ] = $value;
+						$mapped[$param] = $value;
 					} else {
-						foreach ( $specific as $param ) {
-							$mapped[ $param ] = $value;
+						foreach ($specific as $param) {
+							$mapped[$param] = $value;
 						}
 					}
 				} else {
-					$mapped[ $specific ] = $value;
+					$mapped[$specific] = $value;
 				}
 			}
 		}
 
 		// handling of non generic parameters
 
-		$extra = array_diff_key( $params, $this->_params );
+		$extra = array_diff_key($params, $this->_params);
 
-		return empty( $extra )
+		return empty($extra)
 			? $mapped
-			: array_merge( $mapped, $extra );
+			: array_merge($mapped, $extra);
 	}
 }
