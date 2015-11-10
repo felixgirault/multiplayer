@@ -43,7 +43,31 @@ class MultiplayerTest extends PHPUnit_Framework_TestCase {
 	 *
 	 */
 	public function setUp() {
-		$this->Multiplayer = new Multiplayer($this->services);
+		$this->Multiplayer = new Multiplayer($this->services, function($url) {
+			return $url;
+		});
+	}
+
+
+
+	/**
+	 *
+	 */
+	public function testTemplate() {
+		$expected = <<<HTML
+			<iframe
+				src="http://foo.bar"
+				frameborder="0"
+				webkitAllowFullScreen
+				mozallowfullscreen
+				allowFullScreen
+			></iframe>
+HTML;
+
+		$this->assertEquals(
+			$expected,
+			$this->Multiplayer->template('http://foo.bar')
+		);
 	}
 
 
@@ -54,7 +78,7 @@ class MultiplayerTest extends PHPUnit_Framework_TestCase {
 	public function testHtml() {
 		$this->assertEquals(
 			'http://service.com/player/42',
-			$this->Multiplayer->html('service.com/video/42', [], '%s')
+			$this->Multiplayer->html('service.com/video/42', [])
 		);
 	}
 
@@ -66,7 +90,7 @@ class MultiplayerTest extends PHPUnit_Framework_TestCase {
 	public function testHtmlWithParam() {
 		$this->assertEquals(
 			'http://service.com/player/42?foo=bar',
-			$this->Multiplayer->html('service.com/video/42', ['foo' => 'bar'], '%s')
+			$this->Multiplayer->html('service.com/video/42', ['foo' => 'bar'])
 		);
 	}
 
@@ -78,12 +102,29 @@ class MultiplayerTest extends PHPUnit_Framework_TestCase {
 	public function testHtmlWithMappedParam() {
 		$this->assertEquals(
 			'http://service.com/player/42?play=1',
-			$this->Multiplayer->html('service.com/video/42', ['autoPlay' => true], '%s')
+			$this->Multiplayer->html('service.com/video/42', ['autoPlay' => true])
 		);
 
 		$this->assertEquals(
 			'http://service.com/player/42?title=1&author=1',
-			$this->Multiplayer->html('service.com/video/42', ['showInfos' => true], '%s')
+			$this->Multiplayer->html('service.com/video/42', ['showInfos' => true])
+		);
+	}
+
+
+
+	/**
+	 *
+	 */
+	public function testWithTemplate() {
+		$expected = '<iframe />';
+		$template = function($url) use ($expected) {
+			return $expected;
+		};
+
+		$this->assertEquals(
+			$expected,
+			$this->Multiplayer->html('service.com/video/42', [], $template)
 		);
 	}
 }

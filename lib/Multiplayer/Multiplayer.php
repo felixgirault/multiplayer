@@ -16,19 +16,11 @@ use Multiplayer\Param;
 class Multiplayer {
 
 	/**
-	 *	A HTML code to wrap a player URL.
+	 *	Template.
 	 *
-	 *	@var string
+	 *	@var callable
 	 */
-	const wrapper = <<<HTML
-		<iframe
-			src="%s"
-			frameborder="0"
-			webkitAllowFullScreen
-			mozallowfullscreen
-			allowFullScreen
-		></iframe>
-HTML;
+	protected $_template = 'Multiplayer::template';
 
 
 
@@ -113,9 +105,34 @@ HTML;
 	 *
 	 *	@param array $services A set of services to be merged with the
 	 *		default ones.
+	 *	@param callable $template A function to generate the HTML code of a
+	 *		player from an URL.
 	 */
-	public function __construct(array $services = []) {
+	public function __construct(array $services = [], callable $template = null) {
 		$this->_services = array_merge($this->_services, $services);
+
+		if ($template) {
+			$this->_template = $template;
+		}
+	}
+
+
+
+	/**
+	 *	A HTML code to wrap a player URL.
+	 *
+	 *	@var string
+	 */
+	public static function template($url) {
+		return <<<HTML
+			<iframe
+				src="$url"
+				frameborder="0"
+				webkitAllowFullScreen
+				mozallowfullscreen
+				allowFullScreen
+			></iframe>
+HTML;
 	}
 
 
@@ -125,10 +142,11 @@ HTML;
 	 *
 	 *	@param string $source URL or HTML code.
 	 *	@param array $params Player configuration.
-	 *	@param string $wrapper HTML code surrounding the player URL.
+	 *	@param callable $template A function to generate the HTML code of a
+	 *		player from an URL.
 	 *	@return string Prepared HTML code.
 	 */
-	public function html($source, array $params = [], $wrapper = self::wrapper) {
+	public function html($source, array $params = [], callable $template = null) {
 		$params += $this->_params;
 		$id = null;
 
@@ -147,7 +165,10 @@ HTML;
 				$url .= '?' . http_build_query($params);
 			}
 
-			$source = sprintf($wrapper, $url);
+			$source = call_user_func(
+				$template ? $template : $this->_template,
+				$url
+			);
 		}
 
 		return $source;
