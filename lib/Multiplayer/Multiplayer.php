@@ -22,7 +22,10 @@ class Multiplayer {
 	 */
 	const wrapper = <<<HTML
 		<iframe
-			src="%s"
+                        class="%s"
+			%ssrc="%s"
+                        width="%s"
+                        height="%s"
 			frameborder="0"
 			webkitAllowFullScreen
 			mozallowfullscreen
@@ -125,10 +128,13 @@ HTML;
 	 *
 	 *	@param string $source URL or HTML code.
 	 *	@param array $params Player configuration.
+         *      @param string $width Width dimension.
+         *      @param string $height Height dimension.
+         *      @param string $type Type of compatibility.
 	 *	@param string $wrapper HTML code surrounding the player URL.
 	 *	@return string Prepared HTML code.
 	 */
-	public function html($source, array $params = [], $wrapper = self::wrapper) {
+	public function html($source, array $params = [], $width="", $height="", $type="standard", $wrapper = self::wrapper) {
 		$params += $this->_params;
 		$id = null;
 
@@ -146,8 +152,14 @@ HTML;
 			if ($params) {
 				$url .= '?' . http_build_query($params);
 			}
-
-			$source = sprintf($wrapper, $url);
+                        
+                        if($type=="iubenda"){
+                            $class="_iub_cs_activate";
+                            $src="suppressed";
+                            
+                        }
+                        $source = sprintf($wrapper, $class, $src, $url, $width, $height);
+			
 		}
 
 		return $source;
