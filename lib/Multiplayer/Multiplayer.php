@@ -136,6 +136,27 @@ HTML;
 	}
 
 
+	/**
+	 *	A responsive HTML code to wrap a player URL.
+	 *  	Example: echo $Multiplayer->html($url, $options, 'Multiplayer\Multiplayer::templateResponsive');
+	 *
+	 *	@var string
+	 */
+	public static function templateResponsive($url) {
+		return <<<HTML
+			<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
+				<iframe
+					src="$url"
+					frameborder="0"
+					style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+					webkitAllowFullScreen
+					mozallowfullscreen
+					allowFullScreen
+				></iframe>
+			</div>
+HTML;
+	}
+	
 
 	/**
 	 *	Builds and returns an HTML embed code.
