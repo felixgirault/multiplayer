@@ -3,6 +3,10 @@ Multiplayer
 
 A tiny library to build nice HTML embed codes for videos.
 
+```sh
+composer require fg/multiplayer
+```
+
 Example
 -------
 
